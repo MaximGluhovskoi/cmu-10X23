@@ -1,0 +1,12 @@
+# Oasis model weights (large files)
+oasis500m.safetensors
+vit-l-20.safetensors
+
+# Any other safetensors or pytorch checkpoints
+*.safetensors
+*.pt
+*.pth
+
+# HuggingFace cache (optional)
+.huggingface/
+datasets/

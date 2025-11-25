@@ -16,8 +16,13 @@ import argparse
 from pprint import pprint
 import os
 
-assert torch.cuda.is_available()
-device = "cuda:0"
+# adjusting code for cuda or mps
+if torch.backends.mps.is_available():
+    device = "mps"
+elif torch.cuda.is_available():
+    device = "cuda:0"
+else:
+    raise RuntimeError("No cuda or mps device available!")
 
 
 def main(args):
