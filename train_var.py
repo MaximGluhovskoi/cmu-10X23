@@ -129,6 +129,16 @@ def main():
     parser.add_argument("--num_frames", type=int, default=32)
     parser.add_argument("--batch_size", type=int, default=1)
     parser.add_argument("--epochs", type=int, default=50)
+    # tokenizer hyperparams (should match training)
+    parser.add_argument("--base_channels", type=int, default=64)
+    parser.add_argument("--latent_dim", type=int, default=128)
+    parser.add_argument("--num_embeddings", type=int, default=256)
+    parser.add_argument("--num_res_blocks", type=int, default=0)
+    # VAR hyperparams
+    parser.add_argument("--var_d_model", type=int, default=256)
+    parser.add_argument("--var_n_heads", type=int, default=4)
+    parser.add_argument("--var_n_layers", type=int, default=4)
+    parser.add_argument("--var_dropout", type=float, default=0.1)
     args = parser.parse_args()
 
     device = get_device()
@@ -141,16 +151,23 @@ def main():
     # tokenizer – MUST match train_tokenizer.py
     tokenizer = Tokenizer(
         in_channels=3,
-        base_channels=64,
-        latent_dim=128,      # <- match tokenizer_ms_vqvae.py
-        num_embeddings=256,  # <- match tokenizer_ms_vqvae.py
+        base_channels=args.base_channels,
+        latent_dim=args.latent_dim,      # <- match tokenizer_ms_vqvae.py
+        num_embeddings=args.num_embeddings,  # <- match tokenizer_ms_vqvae.py
         commitment_cost=0.02,
+        num_res_blocks=args.num_res_blocks,
     ).to(device)
     tokenizer.load_state_dict(torch.load(args.tokenizer_ckpt, map_location=device))
     tokenizer.eval()
 
     # VAR model – codebook_size must match num_embeddings (256)
-    cfg = VARConfig()  # assuming var_video.py has codebook_size=256
+    cfg = VARConfig(
+        codebook_size=args.num_embeddings,
+        d_model=args.var_d_model,
+        n_heads=args.var_n_heads,
+        n_layers=args.var_n_layers,
+        dropout=args.var_dropout,
+    )
     var_model = FrameConditionedVAR(cfg).to(device)
 
     optimizer = torch.optim.Adam(var_model.parameters(), lr=1e-4)

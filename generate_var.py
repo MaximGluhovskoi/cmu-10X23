@@ -93,7 +93,8 @@ def top_k_logits(logits, k):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--tokenizer_ckpt", type=str, required=True)
-    parser.add_argument("--var_ckpt", type=str, required=True)
+    parser.add_argument("--var_ckpt", type=str, required=False,
+                        help="VAR checkpoint (not needed if --teacher_forced)")
     parser.add_argument("--traj_dir", type=str, required=True)
     parser.add_argument("--num_frames", type=int, default=32)
     parser.add_argument("--temperature", type=float, default=1.0)
@@ -101,6 +102,16 @@ def main():
     parser.add_argument("--out_video", type=str, default="var_generated.mp4")
     parser.add_argument("--teacher_forced", action="store_true",
                         help="Bypass VAR: encode+decode real video to check tokenizer quality")
+    # tokenizer hyperparams (must match training)
+    parser.add_argument("--base_channels", type=int, default=64)
+    parser.add_argument("--latent_dim", type=int, default=128)
+    parser.add_argument("--num_embeddings", type=int, default=256)
+    parser.add_argument("--num_res_blocks", type=int, default=0)
+    # VAR hyperparams (must match training)
+    parser.add_argument("--var_d_model", type=int, default=256)
+    parser.add_argument("--var_n_heads", type=int, default=4)
+    parser.add_argument("--var_n_layers", type=int, default=4)
+    parser.add_argument("--var_dropout", type=float, default=0.1)
     args = parser.parse_args()
 
     device = get_device()
@@ -109,19 +120,14 @@ def main():
     # tokenizer – MUST match train_tokenizer.py
     tokenizer = Tokenizer(
         in_channels=3,
-        base_channels=64,
-        latent_dim=128,      # match tokenizer training
-        num_embeddings=256,  # match tokenizer training
+        base_channels=args.base_channels,
+        latent_dim=args.latent_dim,      # match tokenizer training
+        num_embeddings=args.num_embeddings,  # match tokenizer training
         commitment_cost=0.02,
+        num_res_blocks=args.num_res_blocks,
     ).to(device)
     tokenizer.load_state_dict(torch.load(args.tokenizer_ckpt, map_location=device))
     tokenizer.eval()
-
-    # VAR model – codebook_size must match num_embeddings (256)
-    cfg = VARConfig()  # VARConfig.codebook_size should be 256
-    var_model = FrameConditionedVAR(cfg).to(device)
-    var_model.load_state_dict(torch.load(args.var_ckpt, map_location=device))
-    var_model.eval()
 
     video, actions = load_video_and_actions(args.traj_dir, args.num_frames)
     video = video.to(device)      # (1,3,T,64,64)
@@ -145,6 +151,21 @@ def main():
         writer.close()
         print(f"Saved tokenizer reconstruction to {args.out_video}")
         return
+
+    if not args.var_ckpt:
+        raise ValueError("Must provide --var_ckpt when not using --teacher_forced")
+
+    # VAR model – codebook_size must match num_embeddings (256)
+    cfg = VARConfig(
+        codebook_size=args.num_embeddings,
+        d_model=args.var_d_model,
+        n_heads=args.var_n_heads,
+        n_layers=args.var_n_layers,
+        dropout=args.var_dropout,
+    )  # VARConfig.codebook_size should be num_embeddings
+    var_model = FrameConditionedVAR(cfg).to(device)
+    var_model.load_state_dict(torch.load(args.var_ckpt, map_location=device))
+    var_model.eval()
 
     with torch.no_grad():
         # encode first frame to seed tokens

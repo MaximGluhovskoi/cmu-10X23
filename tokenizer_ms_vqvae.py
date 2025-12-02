@@ -72,7 +72,7 @@ class Encoder2D(nn.Module):
     Output: z (N, D, 16, 16)  after 2x stride-2 downsamples
     """
 
-    def __init__(self, in_channels=3, base_channels=64, latent_dim=128):
+    def __init__(self, in_channels=3, base_channels=64, latent_dim=128, num_res_blocks=0):
         super().__init__()
         ch = base_channels
         self.net = nn.Sequential(
@@ -90,9 +90,22 @@ class Encoder2D(nn.Module):
             nn.GroupNorm(8, latent_dim),
             nn.SiLU(),
         )
+        self.res_blocks = nn.ModuleList(
+            [
+                nn.Sequential(
+                    nn.Conv2d(latent_dim, latent_dim, kernel_size=3, stride=1, padding=1),
+                    nn.GroupNorm(8, latent_dim),
+                    nn.SiLU(),
+                )
+                for _ in range(num_res_blocks)
+            ]
+        )
 
     def forward(self, x):
-        return self.net(x)
+        x = self.net(x)
+        for block in self.res_blocks:
+            x = x + block(x)
+        return x
 
 
 class Decoder2D(nn.Module):
@@ -103,7 +116,7 @@ class Decoder2D(nn.Module):
     Output: x (N, C, 64, 64)
     """
 
-    def __init__(self, out_channels=3, base_channels=64, latent_dim=128):
+    def __init__(self, out_channels=3, base_channels=64, latent_dim=128, num_res_blocks=0):
         super().__init__()
         ch = base_channels
         self.net = nn.Sequential(
@@ -119,8 +132,20 @@ class Decoder2D(nn.Module):
             # 32 -> 64
             nn.ConvTranspose2d(ch, out_channels, kernel_size=4, stride=2, padding=1),
         )
+        self.res_blocks = nn.ModuleList(
+            [
+                nn.Sequential(
+                    nn.Conv2d(latent_dim, latent_dim, kernel_size=3, stride=1, padding=1),
+                    nn.GroupNorm(8, latent_dim),
+                    nn.SiLU(),
+                )
+                for _ in range(num_res_blocks)
+            ]
+        )
 
     def forward(self, z):
+        for block in self.res_blocks:
+            z = z + block(z)
         return self.net(z)
 
 
@@ -145,12 +170,14 @@ class MultiScaleVQTokenizerVideo2D(nn.Module):
         latent_dim=128,
         num_embeddings=256,
         commitment_cost=0.02,
+        num_res_blocks=0,
     ):
         super().__init__()
         self.n_scales = 1
         self.latent_dim = latent_dim
-        self.encoder = Encoder2D(in_channels, base_channels, latent_dim)
-        self.decoder = Decoder2D(in_channels, base_channels, latent_dim)
+        self.num_embeddings = num_embeddings
+        self.encoder = Encoder2D(in_channels, base_channels, latent_dim, num_res_blocks=num_res_blocks)
+        self.decoder = Decoder2D(in_channels, base_channels, latent_dim, num_res_blocks=num_res_blocks)
         self.vq = VectorQuantizer2D(num_embeddings, latent_dim, commitment_cost)
 
     def encode_tokens(self, x: torch.Tensor):

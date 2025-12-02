@@ -82,6 +82,10 @@ def main():
     parser.add_argument("--batch_size", type=int, default=1)
     parser.add_argument("--epochs", type=int, default=50)
     parser.add_argument("--save_ckpt", type=str, default="tokenizer_ms_vqvae.pt")
+    parser.add_argument("--base_channels", type=int, default=64)
+    parser.add_argument("--latent_dim", type=int, default=128)
+    parser.add_argument("--num_embeddings", type=int, default=256)
+    parser.add_argument("--num_res_blocks", type=int, default=0)
     args = parser.parse_args()
 
     device = get_device()
@@ -92,10 +96,11 @@ def main():
 
     model = Tokenizer(
         in_channels=3,
-        base_channels=64,
-        latent_dim=128,
-        num_embeddings=256,
+        base_channels=args.base_channels,
+        latent_dim=args.latent_dim,
+        num_embeddings=args.num_embeddings,
         commitment_cost=0.02,
+        num_res_blocks=args.num_res_blocks,
     ).to(device)
 
     # Slightly higher LR to help the encoder learn; should still be stable on MPS
