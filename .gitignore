@@ -10,3 +10,4 @@ vit-l-20.safetensors
 # HuggingFace cache (optional)
 .huggingface/
 datasets/
+__pycache__/
