@@ -8,9 +8,13 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
+import math
 
 from tokenizer_ms_vqvae import MultiScaleVQTokenizerVideo2D as Tokenizer
 from var_video import VARConfig, FrameConditionedVAR
+
+import wandb
+
 
 
 def get_device():
@@ -29,12 +33,19 @@ class MineRLVideoActionDataset(Dataset):
     actions: (T-1, 11) float32
     """
 
-    def __init__(self, data_root: str, num_frames: int = 32):
+    def __init__(self, data_roots: str, num_frames: int = 32):
         super().__init__()
         self.num_frames = num_frames
-        self.clip_dirs = sorted(
-            [p for p in glob(os.path.join(data_root, "*")) if os.path.isdir(p)]
-        )
+        # Allow passing a single string or a list of strings
+        if isinstance(data_roots, str):
+            data_roots = [data_roots]
+
+        self.clip_dirs = []
+        for root in data_roots:
+            self.clip_dirs.extend(
+                [p for p in glob(os.path.join(root, "*")) if os.path.isdir(p)]
+            )
+        self.clip_dirs = sorted(self.clip_dirs)
 
         self.index = []
         for d in self.clip_dirs:
@@ -47,7 +58,7 @@ class MineRLVideoActionDataset(Dataset):
             T_actions = arr["action$forward"].shape[0]
 
             reader = imageio.get_reader(mp4_path)
-            n_frames = reader.count_frames()
+            n_frames = reader.get_length()
             reader.close()
 
             # we can only use up to actions+1 frames
@@ -98,8 +109,10 @@ class MineRLVideoActionDataset(Dataset):
         mp4_path = os.path.join(dir_path, "recording.mp4")
         npz_path = os.path.join(dir_path, "rendered.npz")
 
-        # sample a random window to expose the model to different parts of the trajectory
-        start = np.random.randint(0, T_frames - self.num_frames + 1)
+        SKIP = 100  # skip first 100 frames
+
+        valid_start_max = T_frames - self.num_frames
+        start = np.random.randint(SKIP, valid_start_max + 1)
         end = start + self.num_frames
 
         # load frames
@@ -123,10 +136,16 @@ class MineRLVideoActionDataset(Dataset):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--data_root", type=str, required=True)
+    parser.add_argument(
+        "--data_roots",
+        type=str,
+        nargs="+",
+        required=True,
+        help="One or more MineRL trajectory root folders",
+    )
     parser.add_argument("--tokenizer_ckpt", type=str, required=True)
     parser.add_argument("--save_ckpt", type=str, default="var_video.pt")
-    parser.add_argument("--num_frames", type=int, default=32)
+    parser.add_argument("--num_frames", type=int, default=128)
     parser.add_argument("--batch_size", type=int, default=1)
     parser.add_argument("--epochs", type=int, default=50)
     # tokenizer hyperparams (should match training)
@@ -141,11 +160,26 @@ def main():
     parser.add_argument("--var_dropout", type=float, default=0.1)
     args = parser.parse_args()
 
+    wandb.init(
+        project="minecraft-var-video",
+        config={
+            "num_frames": args.num_frames,
+            "batch_size": args.batch_size,
+            "epochs": args.epochs,
+            "var_d_model": args.var_d_model,
+            "var_n_heads": args.var_n_heads,
+            "var_n_layers": args.var_n_layers,
+            "var_dropout": args.var_dropout,
+            "lr": 1e-4,
+            "num_embeddings": args.num_embeddings,
+        },
+    )
+
     device = get_device()
     print("Using device:", device)
 
     # dataset
-    dataset = MineRLVideoActionDataset(args.data_root, num_frames=args.num_frames)
+    dataset = MineRLVideoActionDataset(args.data_roots, num_frames=args.num_frames)
     loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=True, num_workers=2)
 
     # tokenizer – MUST match train_tokenizer.py
@@ -172,7 +206,32 @@ def main():
 
     optimizer = torch.optim.Adam(var_model.parameters(), lr=1e-4)
 
-    for epoch in range(1, args.epochs + 1):
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+        optimizer,
+        mode="min",        # minimizing loss
+        factor=0.8,        # new_lr = old_lr * 0.8
+        patience=5,        # wait 3 epochs before reducing
+    )
+
+    if os.path.exists(args.save_ckpt):
+        print(f"Resuming from checkpoint {args.save_ckpt}")
+        ckpt = torch.load(args.save_ckpt, map_location=device)
+
+        var_model.load_state_dict(ckpt["model"])
+
+        if "optimizer" in ckpt:
+            optimizer.load_state_dict(ckpt["optimizer"])
+        if "scheduler" in ckpt:
+            scheduler.load_state_dict(ckpt["scheduler"])
+
+        start_epoch = ckpt.get("epoch", 1)
+    else:
+        print("Starting fresh training")
+        start_epoch = 1
+
+    best = float("inf")
+
+    for epoch in range(start_epoch, args.epochs + 1):
         var_model.train()
         total_loss = 0.0
 
@@ -213,9 +272,34 @@ def main():
             total_loss += loss.item()
 
         avg = total_loss / len(loader)
+        current_lr = optimizer.param_groups[0]["lr"]
+        token_perplexity = math.exp(avg)
+
+        wandb.log(
+            {
+                "epoch": epoch,
+                "loss": avg,
+                "learning_rate": current_lr,
+                "token_perplexity": token_perplexity,
+            }
+        )
+
+        # Scheduler step
+        scheduler.step(avg)
+
         print(f"Epoch {epoch}: loss={avg:.4f}")
-        torch.save(var_model.state_dict(), args.save_ckpt)
-        print(f"Saved VAR checkpoint to {args.save_ckpt}")
+        if avg < best:
+            best = avg
+            torch.save(
+                {
+                    "epoch": epoch + 1,
+                    "model": var_model.state_dict(),
+                    "optimizer": optimizer.state_dict(),
+                    "scheduler": scheduler.state_dict(),
+                },
+                args.save_ckpt
+            )
+            print(f"Saved VAR checkpoint to {args.save_ckpt}")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,16 @@
+Using device: mps
+Scanning directory /Volumes/1TBSSD/MineRL/MineRLNavigate-v0 (193 trajectories)...
+Training:   0%|                                                                                                                    | 0/50 [00:00<?, ?it/s]
+Scanning directory /Volumes/1TBSSD/MineRL/MineRLTreechop-v0 (210 trajectories)...
+Scanning directory /Volumes/1TBSSD/MineRL/MineRLObtainIronPickaxe-v0 (234 trajectories)...
+Scanning directory /Volumes/1TBSSD/MineRL/MineRLObtainDiamond-v0 (122 trajectories)...
+Found 759/759 usable trajectories with >= 32 frames.
+
+===== TOKENIZER MODEL SUMMARY =====
+Total parameters:     1,995,171
+Trainable parameters: 1,995,171
+Embedding table:      1024 x 192  = 196,608 parameters
+Estimated memory:     7.98 MB  (FP32)
+===================================
+
+Starting fresh training

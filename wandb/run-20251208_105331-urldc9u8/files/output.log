@@ -1,0 +1,62 @@
+Using device: mps
+Starting fresh training
+Training:  96%|██████████████████████████████████████████████████████████████████████████████████████████████████████▋    | 24/25 [08:57<00:29, 29.76s/it]/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/multiprocessing/resource_tracker.py:213: UserWarning: ResourceTracker called reentrantly for resource cleanup, which is unsupported. The semaphore object '/mp-j9yu657e' might leak.
+Epoch 1: loss=0.101276, recon=0.046075, vq=0.055201, lr=1.000000e-04
+New best (0.1013), saved tokenizer to tokenizer_ms_vqvae.pt
+Epoch 2: loss=0.086621, recon=0.028745, vq=0.057875, lr=1.000000e-04
+New best (0.0866), saved tokenizer to tokenizer_ms_vqvae.pt
+Epoch 3: loss=0.061078, recon=0.019064, vq=0.042013, lr=1.000000e-04
+New best (0.0611), saved tokenizer to tokenizer_ms_vqvae.pt
+Epoch 4: loss=0.044548, recon=0.012812, vq=0.031736, lr=1.000000e-04
+New best (0.0445), saved tokenizer to tokenizer_ms_vqvae.pt
+Epoch 5: loss=0.006285, recon=0.001916, vq=0.004369, lr=1.000000e-04
+New best (0.0063), saved tokenizer to tokenizer_ms_vqvae.pt
+Epoch 6: loss=0.028571, recon=0.009993, vq=0.018578, lr=1.000000e-04
+Epoch 7: loss=0.053394, recon=0.013208, vq=0.040186, lr=1.000000e-04
+Epoch 8: loss=0.013009, recon=0.002842, vq=0.010167, lr=1.000000e-04
+Epoch 9: loss=0.075601, recon=0.012599, vq=0.063002, lr=1.000000e-04
+Epoch 10: loss=0.004919, recon=0.000801, vq=0.004118, lr=8.000000e-05
+New best (0.0049), saved tokenizer to tokenizer_ms_vqvae.pt
+Epoch 11: loss=0.006206, recon=0.001047, vq=0.005158, lr=8.000000e-05
+Epoch 12: loss=0.027490, recon=0.004783, vq=0.022707, lr=8.000000e-05
+Epoch 13: loss=0.065934, recon=0.011799, vq=0.054135, lr=8.000000e-05
+Epoch 14: loss=0.056607, recon=0.009198, vq=0.047409, lr=8.000000e-05
+Epoch 15: loss=0.026584, recon=0.004093, vq=0.022492, lr=6.400000e-05
+Epoch 16: loss=0.144346, recon=0.020990, vq=0.123357, lr=6.400000e-05
+Epoch 17: loss=0.014999, recon=0.002753, vq=0.012246, lr=6.400000e-05
+Epoch 18: loss=0.046795, recon=0.006682, vq=0.040113, lr=6.400000e-05
+Epoch 19: loss=0.174995, recon=0.024257, vq=0.150738, lr=5.120000e-05
+Epoch 20: loss=0.044534, recon=0.006645, vq=0.037889, lr=5.120000e-05
+Epoch 21: loss=0.309194, recon=0.038684, vq=0.270510, lr=5.120000e-05
+Epoch 22: loss=0.013056, recon=0.001949, vq=0.011107, lr=5.120000e-05
+Epoch 23: loss=0.138853, recon=0.014778, vq=0.124076, lr=4.096000e-05
+Epoch 24: loss=0.090582, recon=0.010068, vq=0.080514, lr=4.096000e-05
+  warnings.warn(
+/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/multiprocessing/resource_tracker.py:213: UserWarning: ResourceTracker called reentrantly for resource cleanup, which is unsupported. The semaphore object '/mp-hi7vw5cb' might leak.
+  warnings.warn(
+/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/multiprocessing/resource_tracker.py:213: UserWarning: ResourceTracker called reentrantly for resource cleanup, which is unsupported. The semaphore object '/mp-v7blz094' might leak.
+  warnings.warn(
+/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/multiprocessing/resource_tracker.py:213: UserWarning: ResourceTracker called reentrantly for resource cleanup, which is unsupported. The semaphore object '/mp-evjaztny' might leak.
+  warnings.warn(
+/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/multiprocessing/resource_tracker.py:213: UserWarning: ResourceTracker called reentrantly for resource cleanup, which is unsupported. The semaphore object '/mp-3nnk6ho2' might leak.
+  warnings.warn(
+/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/multiprocessing/resource_tracker.py:213: UserWarning: ResourceTracker called reentrantly for resource cleanup, which is unsupported. The semaphore object '/mp-jh98_73z' might leak.
+  warnings.warn(
+/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/multiprocessing/resource_tracker.py:213: UserWarning: ResourceTracker called reentrantly for resource cleanup, which is unsupported. The semaphore object '/mp-b_umxvr0' might leak.
+  warnings.warn(
+/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/multiprocessing/resource_tracker.py:213: UserWarning: ResourceTracker called reentrantly for resource cleanup, which is unsupported. The semaphore object '/mp-yp7ukaog' might leak.
+  warnings.warn(
+/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/multiprocessing/resource_tracker.py:213: UserWarning: ResourceTracker called reentrantly for resource cleanup, which is unsupported. The semaphore object '/mp-9x7wda0z' might leak.
+  warnings.warn(
+/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/multiprocessing/resource_tracker.py:213: UserWarning: ResourceTracker called reentrantly for resource cleanup, which is unsupported. The semaphore object '/mp-f5znjsdq' might leak.
+  warnings.warn(
+/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/multiprocessing/resource_tracker.py:213: UserWarning: ResourceTracker called reentrantly for resource cleanup, which is unsupported. The semaphore object '/mp-km51xtfr' might leak.
+  warnings.warn(
+/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/multiprocessing/resource_tracker.py:213: UserWarning: ResourceTracker called reentrantly for resource cleanup, which is unsupported. The semaphore object '/mp-jsradb6t' might leak.
+  warnings.warn(
+/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/multiprocessing/resource_tracker.py:213: UserWarning: ResourceTracker called reentrantly for resource cleanup, which is unsupported. The semaphore object '/mp-mzwhm4gj' might leak.
+  warnings.warn(
+/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/multiprocessing/resource_tracker.py:213: UserWarning: ResourceTracker called reentrantly for resource cleanup, which is unsupported. The semaphore object '/mp-6vlb3uld' might leak.
+  warnings.warn(
+Epoch 25: loss=0.103882, recon=0.012440, vq=0.091442, lr=4.096000e-05
+Training: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████| 25/25 [09:25<00:00, 22.64s/it]

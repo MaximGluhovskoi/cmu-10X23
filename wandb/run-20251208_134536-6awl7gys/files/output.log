@@ -1,0 +1,22 @@
+Using device: mps
+Scanning directory /Volumes/1TBSSD/MineRL/MineRLNavigate-v0 (193 trajectories)...
+Traceback (most recent call last):                                                                                                                        
+Scanning directory /Volumes/1TBSSD/MineRL/MineRLTreechop-v0 (210 trajectories)...
+Scanning directory /Volumes/1TBSSD/MineRL/MineRLObtainIron-v0 (0 trajectories)...
+Scanning directory /Volumes/1TBSSD/MineRL/MineRLObtainDiamond-v0 (122 trajectories)...
+  File "/Users/maximgluhovskoi/Desktop/Desktop_sub/10723/project/cmu-10X23/train_tokenizer.py", line 293, in <module>
+    main()
+  File "/Users/maximgluhovskoi/Desktop/Desktop_sub/10723/project/cmu-10X23/train_tokenizer.py", line 192, in main
+    dataset = MineRLVideoDataset(args.data_roots, num_frames=args.num_frames)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/maximgluhovskoi/Desktop/Desktop_sub/10723/project/cmu-10X23/train_tokenizer.py", line 112, in __init__
+    _ = reader.get_data(test_frame_idx)  # just one frame
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/site-packages/imageio/v2.py", line 151, in get_data
+    img = self.instance.read(index=index, **self.read_args)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/site-packages/imageio/plugins/pyav.py", line 520, in read
+    self._seek(index, constant_framerate=constant_framerate)
+  File "/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/site-packages/imageio/plugins/pyav.py", line 1218, in _seek
+    next(self._decoder)
+KeyboardInterrupt

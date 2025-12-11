@@ -1,0 +1,32 @@
+Using device: mps
+Scanning directory /Volumes/1TBSSD/MineRL/MineRLNavigate-v0 (193 trajectories)...
+Training:  10%|██████████▌                                                                                              | 5/50 [36:35<5:29:20, 439.12s/it]
+Scanning directory /Volumes/1TBSSD/MineRL/MineRLTreechop-v1 (0 trajectories)...
+Scanning directory /Volumes/1TBSSD/MineRL/MineRLNavigateExtreme-v0 (0 trajectories)...
+Scanning directory /Volumes/1TBSSD/MineRL/MineRLObtainDiamond-v0 (122 trajectories)...
+Found 315/315 usable trajectories with >= 32 frames.
+
+===== TOKENIZER MODEL SUMMARY =====
+Total parameters:     3,716,995
+Trainable parameters: 3,716,995
+Embedding table:      2048 x 256  = 524,288 parameters
+Estimated memory:     14.87 MB  (FP32)
+===================================
+
+Starting fresh training
+Epoch 1: loss=0.714660, recon=0.140928, vq=0.573732, lr=1.000000e-03
+New best (0.7147), saved tokenizer to tokenizer_ms_vqvae.pt
+Epoch 2: loss=0.588940, recon=0.125824, vq=0.463116, lr=1.000000e-03
+New best (0.5889), saved tokenizer to tokenizer_ms_vqvae.pt
+Epoch 3: loss=0.300351, recon=0.092491, vq=0.207860, lr=1.000000e-03
+New best (0.3004), saved tokenizer to tokenizer_ms_vqvae.pt
+Epoch 4: loss=0.202456, recon=0.080833, vq=0.121622, lr=1.000000e-03
+New best (0.2025), saved tokenizer to tokenizer_ms_vqvae.pt
+Epoch 5: loss=0.213371, recon=0.081485, vq=0.131886, lr=1.000000e-03
+Traceback (most recent call last):
+  File "/Users/maximgluhovskoi/Desktop/Desktop_sub/10723/project/cmu-10X23/train_tokenizer.py", line 293, in <module>
+    main()
+  File "/Users/maximgluhovskoi/Desktop/Desktop_sub/10723/project/cmu-10X23/train_tokenizer.py", line 255, in main
+    total_loss += loss.item()
+                  ^^^^^^^^^^^
+KeyboardInterrupt

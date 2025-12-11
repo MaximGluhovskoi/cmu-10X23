@@ -1,0 +1,19 @@
+Using device: mps
+Found 315/315 valid trajectories with >= 32 frames.
+
+===== TOKENIZER MODEL SUMMARY =====
+Total parameters:     932,803
+Trainable parameters: 932,803
+Embedding table:      1024 x 128  = 131,072 parameters
+Estimated memory:     3.73 MB  (FP32)
+===================================
+
+Starting fresh training
+Training:   0%|                                                                                                                    | 0/50 [00:05<?, ?it/s]
+num_batches this epoch: 0
+Traceback (most recent call last):
+  File "/Users/maximgluhovskoi/Desktop/Desktop_sub/10723/project/cmu-10X23/train_tokenizer.py", line 253, in <module>
+    main()
+  File "/Users/maximgluhovskoi/Desktop/Desktop_sub/10723/project/cmu-10X23/train_tokenizer.py", line 217, in main
+    raise RuntimeError("No batches were processed this epoch - check DataLoader and dataset")
+RuntimeError: No batches were processed this epoch - check DataLoader and dataset

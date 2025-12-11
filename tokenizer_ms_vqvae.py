@@ -125,12 +125,14 @@ class Decoder2D(nn.Module):
             nn.SiLU(),
 
             # 16 -> 32
-            nn.ConvTranspose2d(ch * 2, ch, kernel_size=4, stride=2, padding=1),
+            nn.Upsample(scale_factor=2, mode="bilinear", align_corners=False),
+            nn.Conv2d(ch * 2, ch, kernel_size=3, stride=1, padding=1),
             nn.GroupNorm(8, ch),
             nn.SiLU(),
 
             # 32 -> 64
-            nn.ConvTranspose2d(ch, out_channels, kernel_size=4, stride=2, padding=1),
+            nn.Upsample(scale_factor=2, mode="bilinear", align_corners=False),
+            nn.Conv2d(ch, out_channels, kernel_size=3, stride=1, padding=1),
         )
         self.res_blocks = nn.ModuleList(
             [

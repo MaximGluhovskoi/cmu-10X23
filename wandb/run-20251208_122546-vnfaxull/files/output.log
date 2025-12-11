@@ -1,0 +1,24 @@
+Using device: mps
+Traceback (most recent call last):                                                                                                                        
+[SKIP] Failed to read /Volumes/1TBSSD/MineRL/MineRLNavigate-v0/v3_agonizing_kale_tree_nymph-7_172787-173996/recording.mp4: generator raised StopIteration
+[SKIP] Failed to read /Volumes/1TBSSD/MineRL/MineRLNavigate-v0/v3_agonizing_kale_tree_nymph-7_177132-178231/recording.mp4: generator raised StopIteration
+[SKIP] Failed to read /Volumes/1TBSSD/MineRL/MineRLNavigate-v0/v3_burdensome_durian_polyphemus-10_1527-2683/recording.mp4: generator raised StopIteration
+[SKIP] Failed to read /Volumes/1TBSSD/MineRL/MineRLNavigate-v0/v3_burdensome_durian_polyphemus-10_6086-6860/recording.mp4: generator raised StopIteration
+[SKIP] Failed to read /Volumes/1TBSSD/MineRL/MineRLNavigate-v0/v3_calculating_fava_bean_siren-3_1819-3028/recording.mp4: generator raised StopIteration
+[SKIP] Failed to read /Volumes/1TBSSD/MineRL/MineRLNavigate-v0/v3_excellent_pluot_behemoth-4_1425-2362/recording.mp4: generator raised StopIteration
+  File "/Users/maximgluhovskoi/Desktop/Desktop_sub/10723/project/cmu-10X23/train_tokenizer.py", line 294, in <module>
+    main()
+  File "/Users/maximgluhovskoi/Desktop/Desktop_sub/10723/project/cmu-10X23/train_tokenizer.py", line 184, in main
+    dataset = MineRLVideoDataset(args.data_roots, num_frames=args.num_frames)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/maximgluhovskoi/Desktop/Desktop_sub/10723/project/cmu-10X23/train_tokenizer.py", line 81, in __init__
+    for _ in reader:
+             ^^^^^^
+  File "/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/site-packages/imageio/v2.py", line 166, in iter_data
+    metadata = self.instance.metadata(index=idx, exclude_applied=False)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/site-packages/imageio/plugins/pyav.py", line 798, in metadata
+    self._seek(index, constant_framerate=constant_framerate)
+  File "/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/site-packages/imageio/plugins/pyav.py", line 1218, in _seek
+    next(self._decoder)
+KeyboardInterrupt

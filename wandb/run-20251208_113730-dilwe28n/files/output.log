@@ -1,0 +1,62 @@
+Using device: mps
+
+===== TOKENIZER MODEL SUMMARY =====
+Total parameters:     932,803
+Trainable parameters: 932,803
+Embedding table:      1024 x 128  = 131,072 parameters
+Estimated memory:     3.73 MB  (FP32)
+===================================
+
+Starting fresh training
+Training:   4%|████▎                                                                                                       | 2/50 [00:21<07:16,  9.09s/it]Exception ignored in: <function _MultiProcessingDataLoaderIter.__del__ at 0x10a8ed3a0>
+Epoch 1: loss=0.086108, recon=0.033702, vq=0.052406, lr=1.000000e-04
+New best (0.0861), saved tokenizer to tokenizer_ms_vqvae.pt
+Epoch 2: loss=0.000000, recon=0.000000, vq=0.000000, lr=1.000000e-04
+New best (0.0000), saved tokenizer to tokenizer_ms_vqvae.pt
+Traceback (most recent call last):
+  File "/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 1654, in __del__
+    self._shutdown_workers()
+  File "/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 1618, in _shutdown_workers
+    w.join(timeout=_utils.MP_STATUS_CHECK_INTERVAL)
+  File "/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/multiprocessing/process.py", line 149, in join
+    res = self._popen.wait(timeout)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/multiprocessing/popen_fork.py", line 40, in wait
+    if not wait([self.sentinel], timeout):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/multiprocessing/connection.py", line 1136, in wait
+    ready = selector.select(timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/selectors.py", line 415, in select
+    fd_event_list = self._selector.poll(timeout)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt:
+Training:   4%|████▎                                                                                                       | 2/50 [00:34<13:37, 17.03s/it]
+Traceback (most recent call last):
+  File "/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 1275, in _try_get_data
+    data = self._data_queue.get(timeout=timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/multiprocessing/queues.py", line 114, in get
+    raise Empty
+_queue.Empty
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/maximgluhovskoi/Desktop/Desktop_sub/10723/project/cmu-10X23/train_tokenizer.py", line 242, in <module>
+    main()
+  File "/Users/maximgluhovskoi/Desktop/Desktop_sub/10723/project/cmu-10X23/train_tokenizer.py", line 189, in main
+    for vids in loader:
+                ^^^^^^
+  File "/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 732, in __next__
+    data = self._next_data()
+           ^^^^^^^^^^^^^^^^^
+  File "/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 1482, in _next_data
+    idx, data = self._get_data()
+                ^^^^^^^^^^^^^^^^
+  File "/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 1444, in _get_data
+    success, data = self._try_get_data()
+                    ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 1288, in _try_get_data
+    raise RuntimeError(
+RuntimeError: DataLoader worker (pid(s) 40341, 40342) exited unexpectedly

@@ -1,0 +1,53 @@
+Using device: mps
+Scanning directory /Volumes/1TBSSD/MineRL/MineRLNavigate-v0 (193 trajectories)...
+Traceback (most recent call last):                                                                                                                        
+Scanning directory /Volumes/1TBSSD/MineRL/MineRLTreechop-v1 (0 trajectories)...
+Scanning directory /Volumes/1TBSSD/MineRL/MineRLNavigateExtreme-v0 (0 trajectories)...
+Scanning directory /Volumes/1TBSSD/MineRL/MineRLObtainDiamond-v0 (122 trajectories)...
+Found 315/315 usable trajectories with >= 32 frames.
+
+===== TOKENIZER MODEL SUMMARY =====
+Total parameters:     1,995,171
+Trainable parameters: 1,995,171
+Embedding table:      1024 x 192  = 196,608 parameters
+Estimated memory:     7.98 MB  (FP32)
+===================================
+
+Resuming from checkpoint tokenizer_ms_vqvae.pt
+  File "/Users/maximgluhovskoi/Desktop/Desktop_sub/10723/project/cmu-10X23/train_tokenizer.py", line 293, in <module>
+    main()
+  File "/Users/maximgluhovskoi/Desktop/Desktop_sub/10723/project/cmu-10X23/train_tokenizer.py", line 222, in main
+    model.load_state_dict(ckpt["model"])
+  File "/Users/maximgluhovskoi/opt/anaconda3/envs/py312/lib/python3.12/site-packages/torch/nn/modules/module.py", line 2629, in load_state_dict
+    raise RuntimeError(
+RuntimeError: Error(s) in loading state_dict for MultiScaleVQTokenizerVideo2D:
+	size mismatch for encoder.net.0.weight: copying a param with shape torch.Size([128, 3, 4, 4]) from checkpoint, the shape in current model is torch.Size([96, 3, 4, 4]).
+	size mismatch for encoder.net.0.bias: copying a param with shape torch.Size([128]) from checkpoint, the shape in current model is torch.Size([96]).
+	size mismatch for encoder.net.1.weight: copying a param with shape torch.Size([128]) from checkpoint, the shape in current model is torch.Size([96]).
+	size mismatch for encoder.net.1.bias: copying a param with shape torch.Size([128]) from checkpoint, the shape in current model is torch.Size([96]).
+	size mismatch for encoder.net.3.weight: copying a param with shape torch.Size([256, 128, 4, 4]) from checkpoint, the shape in current model is torch.Size([192, 96, 4, 4]).
+	size mismatch for encoder.net.3.bias: copying a param with shape torch.Size([256]) from checkpoint, the shape in current model is torch.Size([192]).
+	size mismatch for encoder.net.4.weight: copying a param with shape torch.Size([256]) from checkpoint, the shape in current model is torch.Size([192]).
+	size mismatch for encoder.net.4.bias: copying a param with shape torch.Size([256]) from checkpoint, the shape in current model is torch.Size([192]).
+	size mismatch for encoder.net.6.weight: copying a param with shape torch.Size([256, 256, 3, 3]) from checkpoint, the shape in current model is torch.Size([192, 192, 3, 3]).
+	size mismatch for encoder.net.6.bias: copying a param with shape torch.Size([256]) from checkpoint, the shape in current model is torch.Size([192]).
+	size mismatch for encoder.net.7.weight: copying a param with shape torch.Size([256]) from checkpoint, the shape in current model is torch.Size([192]).
+	size mismatch for encoder.net.7.bias: copying a param with shape torch.Size([256]) from checkpoint, the shape in current model is torch.Size([192]).
+	size mismatch for encoder.res_blocks.0.0.weight: copying a param with shape torch.Size([256, 256, 3, 3]) from checkpoint, the shape in current model is torch.Size([192, 192, 3, 3]).
+	size mismatch for encoder.res_blocks.0.0.bias: copying a param with shape torch.Size([256]) from checkpoint, the shape in current model is torch.Size([192]).
+	size mismatch for encoder.res_blocks.0.1.weight: copying a param with shape torch.Size([256]) from checkpoint, the shape in current model is torch.Size([192]).
+	size mismatch for encoder.res_blocks.0.1.bias: copying a param with shape torch.Size([256]) from checkpoint, the shape in current model is torch.Size([192]).
+	size mismatch for decoder.net.0.weight: copying a param with shape torch.Size([256, 256, 3, 3]) from checkpoint, the shape in current model is torch.Size([192, 192, 3, 3]).
+	size mismatch for decoder.net.0.bias: copying a param with shape torch.Size([256]) from checkpoint, the shape in current model is torch.Size([192]).
+	size mismatch for decoder.net.1.weight: copying a param with shape torch.Size([256]) from checkpoint, the shape in current model is torch.Size([192]).
+	size mismatch for decoder.net.1.bias: copying a param with shape torch.Size([256]) from checkpoint, the shape in current model is torch.Size([192]).
+	size mismatch for decoder.net.4.weight: copying a param with shape torch.Size([128, 256, 3, 3]) from checkpoint, the shape in current model is torch.Size([96, 192, 3, 3]).
+	size mismatch for decoder.net.4.bias: copying a param with shape torch.Size([128]) from checkpoint, the shape in current model is torch.Size([96]).
+	size mismatch for decoder.net.5.weight: copying a param with shape torch.Size([128]) from checkpoint, the shape in current model is torch.Size([96]).
+	size mismatch for decoder.net.5.bias: copying a param with shape torch.Size([128]) from checkpoint, the shape in current model is torch.Size([96]).
+	size mismatch for decoder.net.8.weight: copying a param with shape torch.Size([3, 128, 3, 3]) from checkpoint, the shape in current model is torch.Size([3, 96, 3, 3]).
+	size mismatch for decoder.res_blocks.0.0.weight: copying a param with shape torch.Size([256, 256, 3, 3]) from checkpoint, the shape in current model is torch.Size([192, 192, 3, 3]).
+	size mismatch for decoder.res_blocks.0.0.bias: copying a param with shape torch.Size([256]) from checkpoint, the shape in current model is torch.Size([192]).
+	size mismatch for decoder.res_blocks.0.1.weight: copying a param with shape torch.Size([256]) from checkpoint, the shape in current model is torch.Size([192]).
+	size mismatch for decoder.res_blocks.0.1.bias: copying a param with shape torch.Size([256]) from checkpoint, the shape in current model is torch.Size([192]).
+	size mismatch for vq.embedding.weight: copying a param with shape torch.Size([2048, 256]) from checkpoint, the shape in current model is torch.Size([1024, 192]).

@@ -1,0 +1,53 @@
+Using device: mps
+Scanning directory /Volumes/1TBSSD/MineRL/MineRLNavigate-v0 (193 trajectories)...
+Training:  22%|██████████████████████▉                                                                                 | 11/50 [25:59<1:28:00, 135.41s/it]
+Scanning directory /Volumes/1TBSSD/MineRL/MineRLTreechop-v0 (210 trajectories)...
+Scanning directory /Volumes/1TBSSD/MineRL/MineRLObtainIronPickaxe-v0 (234 trajectories)...
+Scanning directory /Volumes/1TBSSD/MineRL/MineRLObtainDiamond-v0 (122 trajectories)...
+Found 759/759 usable trajectories with >= 32 frames.
+
+===== TOKENIZER MODEL SUMMARY =====
+Total parameters:     1,995,171
+Trainable parameters: 1,995,171
+Embedding table:      1024 x 192  = 196,608 parameters
+Estimated memory:     7.98 MB  (FP32)
+===================================
+
+Starting fresh training
+Epoch 1: loss=0.565013, recon=0.094555, vq=0.470459, lr=1.000000e-03
+New best (0.5650), saved tokenizer to tokenizer_ms_vqvae.pt
+Epoch 2: loss=0.183726, recon=0.068984, vq=0.114742, lr=1.000000e-03
+New best (0.1837), saved tokenizer to tokenizer_ms_vqvae.pt
+Epoch 3: loss=0.212087, recon=0.074854, vq=0.137233, lr=1.000000e-03
+Epoch 4: loss=0.129758, recon=0.066358, vq=0.063400, lr=1.000000e-03
+New best (0.1298), saved tokenizer to tokenizer_ms_vqvae.pt
+Epoch 5: loss=0.097599, recon=0.057858, vq=0.039741, lr=1.000000e-03
+New best (0.0976), saved tokenizer to tokenizer_ms_vqvae.pt
+Epoch 6: loss=0.088492, recon=0.060018, vq=0.028473, lr=1.000000e-03
+New best (0.0885), saved tokenizer to tokenizer_ms_vqvae.pt
+Epoch 7: loss=0.071191, recon=0.054192, vq=0.016999, lr=1.000000e-03
+New best (0.0712), saved tokenizer to tokenizer_ms_vqvae.pt
+Epoch 8: loss=0.011458, recon=0.009082, vq=0.002376, lr=1.000000e-03
+New best (0.0115), saved tokenizer to tokenizer_ms_vqvae.pt
+Epoch 9: loss=0.063123, recon=0.049203, vq=0.013921, lr=1.000000e-03
+Epoch 10: loss=0.062562, recon=0.049763, vq=0.012799, lr=1.000000e-03
+Epoch 11: loss=0.060685, recon=0.048847, vq=0.011838, lr=1.000000e-03
+Epoch 12: loss=0.061041, recon=0.047464, vq=0.013577, lr=1.000000e-03
+Epoch 13: loss=0.057849, recon=0.045596, vq=0.012252, lr=8.000000e-04
+Epoch 14: loss=0.057600, recon=0.044359, vq=0.013242, lr=8.000000e-04
+Epoch 15: loss=0.062843, recon=0.045992, vq=0.016851, lr=8.000000e-04
+Epoch 16: loss=0.065159, recon=0.045134, vq=0.020025, lr=8.000000e-04
+Epoch 17: loss=0.067929, recon=0.044000, vq=0.023929, lr=6.400000e-04
+Epoch 18: loss=0.074403, recon=0.044907, vq=0.029496, lr=6.400000e-04
+Epoch 19: loss=0.070073, recon=0.042920, vq=0.027153, lr=6.400000e-04
+Epoch 20: loss=0.075255, recon=0.043295, vq=0.031960, lr=6.400000e-04
+Epoch 21: loss=0.075399, recon=0.043698, vq=0.031700, lr=5.120000e-04
+Epoch 22: loss=0.062081, recon=0.037848, vq=0.024233, lr=5.120000e-04
+Epoch 23: loss=0.068102, recon=0.041749, vq=0.026353, lr=5.120000e-04
+Traceback (most recent call last):
+  File "/Users/maximgluhovskoi/Desktop/Desktop_sub/10723/project/cmu-10X23/train_tokenizer.py", line 293, in <module>
+    main()
+  File "/Users/maximgluhovskoi/Desktop/Desktop_sub/10723/project/cmu-10X23/train_tokenizer.py", line 255, in main
+    total_loss += loss.item()
+                  ^^^^^^^^^^^
+KeyboardInterrupt

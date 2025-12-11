@@ -1,0 +1,10 @@
+Using device: mps
+Starting fresh training
+Training:   0%|                                                                                                                    | 0/25 [00:14<?, ?it/s]
+Traceback (most recent call last):
+  File "/Users/maximgluhovskoi/Desktop/Desktop_sub/10723/project/cmu-10X23/train_tokenizer.py", line 221, in <module>
+    main()
+  File "/Users/maximgluhovskoi/Desktop/Desktop_sub/10723/project/cmu-10X23/train_tokenizer.py", line 184, in main
+    total_recon += recon_loss.item()
+    ^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'total_recon' where it is not associated with a value

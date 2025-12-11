@@ -1,0 +1,7 @@
+{"time":"2025-12-08T13:46:34.602237-05:00","level":"INFO","msg":"stream: starting","core version":"0.21.1"}
+{"time":"2025-12-08T13:46:34.825344-05:00","level":"INFO","msg":"stream: created new stream","id":"9vaxog15"}
+{"time":"2025-12-08T13:46:34.82545-05:00","level":"INFO","msg":"stream: started","id":"9vaxog15"}
+{"time":"2025-12-08T13:46:34.831306-05:00","level":"INFO","msg":"handler: started","stream_id":"9vaxog15"}
+{"time":"2025-12-08T13:46:34.831523-05:00","level":"INFO","msg":"sender: started","stream_id":"9vaxog15"}
+{"time":"2025-12-08T13:46:34.831332-05:00","level":"INFO","msg":"writer: started","stream_id":"9vaxog15"}
+{"time":"2025-12-08T16:53:40.16993-05:00","level":"INFO","msg":"api: retrying HTTP error","status":502,"url":"https://api.wandb.ai/files/cmu_dl/minecraft-tokenizer/9vaxog15/file_stream","body":"\n<html><head>\n<meta http-equiv=\"content-type\" content=\"text/html;charset=utf-8\">\n<title>502 Server Error</title>\n</head>\n<body text=#000000 bgcolor=#ffffff>\n<h1>Error: Server Error</h1>\n<h2>The server encountered a temporary error and could not complete your request.<p>Please try again in 30 seconds.</h2>\n<h2></h2>\n</body></html>\n"}
