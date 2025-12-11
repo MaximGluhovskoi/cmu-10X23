@@ -15,6 +15,16 @@ from safetensors.torch import load_model
 import argparse
 from pprint import pprint
 import os
+import time
+import numpy as np
+
+# Optional metrics imports
+try:
+    import lpips
+    LPIPS_AVAILABLE = True
+except ImportError:
+    LPIPS_AVAILABLE = False
+    print("Warning: lpips not found. Install with: pip install lpips to compute t-LPIPS metric.")
 
 # adjusting code for cuda or mps
 if torch.backends.mps.is_available():
@@ -77,7 +87,14 @@ def main(args):
     scaling_factor = 0.07843137255
     x = rearrange(x, "b t c h w -> (b t) c h w")
     with torch.no_grad():
-        with autocast("cuda", dtype=torch.half):
+        # Use MPS if available, otherwise CUDA, fallback to no autocast
+        if device == "mps":
+            # MPS doesn't support autocast the same way, but we can still use it
+            x = vae.encode(x * 2 - 1).mean * scaling_factor
+        elif device.startswith("cuda"):
+            with autocast("cuda", dtype=torch.half):
+                x = vae.encode(x * 2 - 1).mean * scaling_factor
+        else:
             x = vae.encode(x * 2 - 1).mean * scaling_factor
     x = rearrange(x, "(b t) (h w) c -> b t c h w", t=n_prompt_frames, h=H // vae.patch_size, w=W // vae.patch_size)
     x = x[:, :n_prompt_frames]
@@ -87,6 +104,9 @@ def main(args):
     alphas = 1.0 - betas
     alphas_cumprod = torch.cumprod(alphas, dim=0)
     alphas_cumprod = rearrange(alphas_cumprod, "T -> T 1 1 1")
+
+    # Start timing inference
+    inference_start_time = time.time()
 
     # sampling loop
     for i in tqdm(range(n_prompt_frames, total_frames)):
@@ -112,7 +132,11 @@ def main(args):
 
             # get model predictions
             with torch.no_grad():
-                with autocast("cuda", dtype=torch.half):
+                if device.startswith("cuda"):
+                    with autocast("cuda", dtype=torch.half):
+                        v = model(x_curr, t, actions[:, start_frame : i + 1])
+                else:
+                    # MPS or CPU - no autocast needed
                     v = model(x_curr, t, actions[:, start_frame : i + 1])
 
             x_start = alphas_cumprod[t].sqrt() * x_curr - (1 - alphas_cumprod[t]).sqrt() * v
@@ -129,14 +153,87 @@ def main(args):
     # vae decoding
     x = rearrange(x, "b t c h w -> (b t) (h w) c")
     with torch.no_grad():
-        x = (vae.decode(x / scaling_factor) + 1) / 2
+        if device.startswith("cuda"):
+            with autocast("cuda", dtype=torch.half):
+                x = (vae.decode(x / scaling_factor) + 1) / 2
+        else:
+            x = (vae.decode(x / scaling_factor) + 1) / 2
     x = rearrange(x, "(b t) c h w -> b t h w c", t=total_frames)
+
+    # End timing inference
+    inference_time = time.time() - inference_start_time
+    num_generated_frames = total_frames - n_prompt_frames
 
     # save video
     x = torch.clamp(x, 0, 1)
-    x = (x * 255).byte()
-    write_video(args.output_path, x[0].cpu(), fps=args.fps)
+    x_uint8 = (x * 255).byte()
+    write_video(args.output_path, x_uint8[0].cpu(), fps=args.fps)
     print(f"generation saved to {args.output_path}.")
+
+    # Compute metrics
+    print("\n" + "="*50)
+    print("PERFORMANCE METRICS")
+    print("="*50)
+    print(f"Total inference time: {inference_time:.2f}s")
+    print(f"Time per frame: {inference_time / num_generated_frames:.4f}s")
+    print(f"Number of generated frames: {num_generated_frames}")
+
+    # Compute temporal LPIPS (t-LPIPS) if available
+    if LPIPS_AVAILABLE and args.compute_metrics:
+        print("\nComputing temporal consistency (t-LPIPS)...")
+        try:
+            # Handle SSL certificate issues for downloading weights
+            import ssl
+            ssl._create_default_https_context = ssl._create_unverified_context
+            lpips_model = lpips.LPIPS(net='alex').to(device)
+            lpips_model.eval()
+            
+            # Extract generated frames (skip prompt frames)
+            generated_frames = x[0, n_prompt_frames:]  # (T, H, W, C)
+            
+            # Convert to (T, C, H, W) for LPIPS
+            frames_lpips = rearrange(generated_frames, "t h w c -> t c h w")
+            frames_lpips = frames_lpips * 2.0 - 1.0  # Convert to [-1, 1]
+            frames_lpips = frames_lpips.to(device)
+            
+            temporal_dists = []
+            for t in range(frames_lpips.shape[0] - 1):
+                frame_t = frames_lpips[t:t+1]  # (1, C, H, W)
+                frame_t1 = frames_lpips[t+1:t+2]  # (1, C, H, W)
+                
+                with torch.no_grad():
+                    dist = lpips_model(frame_t, frame_t1)
+                temporal_dists.append(dist.item())
+            
+            t_lpips = np.mean(temporal_dists)
+            print(f"t-LPIPS (temporal consistency): {t_lpips:.4f} (lower is better)")
+            
+        except Exception as e:
+            print(f"Warning: Could not compute t-LPIPS: {e}")
+            t_lpips = None
+    else:
+        t_lpips = None
+        if not LPIPS_AVAILABLE:
+            print("\nSkipping t-LPIPS (lpips not installed)")
+        elif not args.compute_metrics:
+            print("\nSkipping t-LPIPS (use --compute-metrics to enable)")
+
+    # Save metrics to file if requested
+    if args.output_metrics:
+        import json
+        metrics = {
+            "inference_time_total": inference_time,
+            "inference_time_per_frame": inference_time / num_generated_frames,
+            "num_generated_frames": num_generated_frames,
+            "num_total_frames": total_frames,
+            "num_prompt_frames": n_prompt_frames,
+            "t_lpips": float(t_lpips) if t_lpips is not None else None,
+        }
+        with open(args.output_metrics, 'w') as f:
+            json.dump(metrics, f, indent=2)
+        print(f"\nMetrics saved to {args.output_metrics}")
+    
+    print("="*50)
 
 
 if __name__ == "__main__":
@@ -197,6 +294,17 @@ if __name__ == "__main__":
         default=20,
     )
     parse.add_argument("--ddim-steps", type=int, help="How many DDIM steps?", default=10)
+    parse.add_argument(
+        "--compute-metrics",
+        action="store_true",
+        help="Compute performance metrics (t-LPIPS, inference time)",
+    )
+    parse.add_argument(
+        "--output-metrics",
+        type=str,
+        default=None,
+        help="Path to save metrics JSON file",
+    )
 
     args = parse.parse_args()
     print("inference args:")
