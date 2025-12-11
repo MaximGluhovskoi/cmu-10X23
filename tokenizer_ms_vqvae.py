@@ -52,7 +52,6 @@ class VectorQuantizer2D(nn.Module):
 
         indices_reshaped = indices.view(n, h, w)  # (N,H,W)
 
-        # Simple anti-dead-code trick: if some codes are barely used, reinit them
         with torch.no_grad():
             usage = torch.bincount(indices, minlength=self.num_embeddings).float()
             dead_codes = (usage < 10).nonzero(as_tuple=False).view(-1)
@@ -76,9 +75,24 @@ class Encoder2D(nn.Module):
         super().__init__()
         ch = base_channels
         self.net = nn.Sequential(
-            # 64 -> 32
+            # 256 -> 128
             nn.Conv2d(in_channels, ch, kernel_size=4, stride=2, padding=1),
             nn.GroupNorm(8, ch),
+            nn.SiLU(),
+
+            # 128 -> 64
+            nn.Conv2d(ch, ch * 2, kernel_size=4, stride=2, padding=1),
+            nn.GroupNorm(8, ch * 2),
+            nn.SiLU(),
+
+            # 128 -> 64
+            nn.Conv2d(ch, ch * 2, kernel_size=4, stride=2, padding=1),
+            nn.GroupNorm(8, ch * 2),
+            nn.SiLU(),
+
+            # 64 -> 32
+            nn.Conv2d(ch, ch * 2, kernel_size=4, stride=2, padding=1),
+            nn.GroupNorm(8, ch * 2),
             nn.SiLU(),
 
             # 32 -> 16
